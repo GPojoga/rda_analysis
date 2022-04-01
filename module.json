@@ -43,10 +43,6 @@
 			"dependencies": [
 				{
 					"stage": "extractors",
-					"module": "File Extractor"
-				},
-				{
-					"stage": "extractors",
 					"module": "USN Extractor"
 				}
 			]

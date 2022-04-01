@@ -144,8 +144,6 @@ def construct_paths(usn, drive):
 
 	print(f"Mapping USN ids to filenames ... ", end="", flush=True)
 	ids = gen_filenames_id_map(usn)
-	with open('output/wtf', 'w+') as debug:
-		debug.write(json.dumps(ids, indent=2))
 	cache = {}
 	print(f"Done!", flush=True)
 	
