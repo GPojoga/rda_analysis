@@ -1,0 +1,57 @@
+{
+	"extractors" : {
+		"USN Extractor": {
+			"type": "module",
+			"path": "modules/usn_extractor/main.py",
+			"input": ["--drives", "C:"],
+			"output": "output/extractors/usn.json"
+		},
+		"Timeline Extractor": {
+			"type": "module",
+			"path": "modules/timeline/main.py",
+			"input": ["--username", "win1user"],
+			"output": "output/extractors/timeline.json"
+		},
+		"Event Extractor": {
+			"type": "module",
+			"path": "modules/evt_extractor/main.py",
+			"output": "output/extractors/events.json"
+		},
+		"File Extractor": {
+			"type": "library",
+			"path": "libraries/file_extractor.py"
+		}
+	},
+	"pre_processors" : {
+		"Prefetch Generator": {
+			"type": "module",
+			"path": "modules/prefetch_generator/main.py",
+			"output": "output/pre_processors/prefetch.json",
+			"dependencies": [ 
+				{
+					"stage": "extractors",
+					"module": "USN Extractor" 
+				}
+			]
+		}
+	},
+	"processors": {
+		"Installation Detector TeamViewer": {
+			"type": "module",
+			"path": "modules/installation_detector_tv/main.py",
+			"output": "output/processors/installation_tv.json",
+			"dependencies": [
+				{
+					"stage": "extractors",
+					"module": "File Extractor"
+				},
+				{
+					"stage": "extractors",
+					"module": "USN Extractor"
+				}
+			]
+		}
+	},
+	"post_processors": {
+	}
+}
