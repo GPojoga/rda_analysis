@@ -46,6 +46,18 @@
 					"module": "USN Extractor"
 				}
 			]
+		},
+		"Installation Detector AnyDesk": {
+			"type": "module",
+			"path": "modules/installation_detector_ad/main.py",
+			"input": ["--username", "win1user"],
+			"output": "output/processors/installation_ad.json",
+		"dependencies": [
+				{
+					"stage": "extractors",
+					"module": "USN Extractor"
+				}
+			]
 		}
 	},
 	"post_processors": {
