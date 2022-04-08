@@ -43,6 +43,10 @@
 			"dependencies": [
 				{
 					"stage": "extractors",
+					"module": "File Extractor"
+				},
+				{
+					"stage": "extractors",
 					"module": "USN Extractor"
 				}
 			]
@@ -52,14 +56,168 @@
 			"path": "modules/installation_detector_ad/main.py",
 			"input": ["--username", "win1user"],
 			"output": "output/processors/installation_ad.json",
-		"dependencies": [
+			"dependencies": [
+				{
+					"stage": "extractors",
+					"module": "File Extractor"
+				},
 				{
 					"stage": "extractors",
 					"module": "USN Extractor"
 				}
 			]
+		},
+		"Connection Detector TeamViewer": {
+			"type": "module",
+			"path": "modules/connection_detector_tv/main.py",
+			"input": ["--utc", "+2"],
+			"output": "output/processors/connection_tv.json",
+			"dependencies": [
+				{
+					"stage": "extractors",
+					"module": "File Extractor"
+				},
+				{
+					"stage": "extractors",
+					"module": "Event Extractor"
+				},
+				{
+					"stage": "processors",
+					"module": "Installation Detector TeamViewer"
+				}
+			]
+		},
+		"Connection Detector AnyDesk": {
+			"type": "module",
+			"path": "modules/connection_detector_ad/main.py",
+			"input": ["--utc", "+2"],
+			"output": "output/processors/connection_ad.json",
+			"dependencies": [
+				{
+					"stage": "extractors",
+					"module": "File Extractor"
+				},
+				{
+					"stage": "processors",
+					"module": "Installation Detector AnyDesk"
+				}
+			]
+		},
+		"File Tracer TeamViewer": {
+			"type": "module",
+			"path": "modules/file_tracer/main.py",
+			"output": "output/processors/file_tracer_tv.json",
+			"dependencies": [
+				{
+					"stage": "extractors",
+					"module": "USN Extractor"
+				},
+				{
+					"stage": "processors",
+					"module": "Connection Detector TeamViewer"
+				}
+			]
+		},
+		"File Tracer AnyDesk": {
+			"type": "module",
+			"path": "modules/file_tracer/main.py",
+			"output": "output/processors/file_tracer_an.json",
+			"dependencies": [
+				{
+					"stage": "extractors",
+					"module": "USN Extractor"
+				},
+				{
+					"stage": "processors",
+					"module": "Connection Detector AnyDesk"
+				}
+			]
+		},
+		"Program Tracer TeamViewer": {
+			"type": "module",
+			"path": "modules/program_tracer/main.py",
+			"output": "output/processors/program_tracer_tv.json",
+			"dependencies": [
+				{
+					"stage": "extractors",
+					"module": "Timeline Extractor"
+				},
+				{
+					"stage": "processors",
+					"module": "Connection Detector TeamViewer"
+				},
+				{
+					"stage": "pre_processors",
+					"module": "Prefetch Generator"
+				}
+			]
+		},
+		"Program Tracer AnyDesk": {
+			"type": "module",
+			"path": "modules/program_tracer/main.py",
+			"output": "output/processors/program_tracer_ad.json",
+			"dependencies": [
+				{
+					"stage": "extractors",
+					"module": "Timeline Extractor"
+				},
+				{
+					"stage": "processors",
+					"module": "Connection Detector AnyDesk"
+				},
+				{
+					"stage": "pre_processors",
+					"module": "Prefetch Generator"
+				}
+			]
 		}
 	},
 	"post_processors": {
+		"Report Compiler TeamViewer": {
+			"type": "module",
+			"path": "modules/report_compiler/main.py",
+			"output": "output/post_processors/report_tv.json",
+			"dependencies": [
+				{
+					"stage": "processors",
+					"module": "Installation Detector TeamViewer"
+				},
+				{
+					"stage": "processors",
+					"module": "Connection Detector TeamViewer"
+				},
+				{
+					"stage": "processors",
+					"module": "File Tracer TeamViewer"
+				},
+				{
+					"stage": "processors",
+					"module": "Program Tracer TeamViewer"
+				}
+			]
+		},
+		"Report Compiler AnyDesk": {
+			"type": "module",
+			"path": "modules/report_compiler/main.py",
+			"output": "output/post_processors/report_ad.json",
+			"dependencies": [
+				{
+					"stage": "processors",
+					"module": "Installation Detector AnyDesk"
+				},
+				{
+					"stage": "processors",
+					"module": "Connection Detector AnyDesk"
+				},
+				{
+					"stage": "processors",
+					"module": "File Tracer AnyDesk"
+				},
+				{
+					"stage": "processors",
+					"module": "Program Tracer AnyDesk"
+				}
+			]
+		}
 	}
 }

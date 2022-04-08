@@ -1,12 +1,20 @@
 import json
+import sys
 import pathlib
 import argparse
+import importlib
+import re
 
 parser = argparse.ArgumentParser(description='Tool for detecting AnyDesk installations.')
+parser.add_argument('cwd_path', type=str, help='CWD of the program entry point')
+parser.add_argument('fex_path', type=str, help='Path to the File Extractor library')
 parser.add_argument('usnj_path', type=str, help='Path to the USN Journal')
 parser.add_argument('--username', type=str, required=True)
 parser.add_argument('--output', type=str, required=True)
 args = parser.parse_args()
+
+sys.path.append(args.cwd_path)
+fex = importlib.import_module(args.fex_path)
 
 def is_usn_create(usn_entry):
 	return usn_entry['reason'] == "0x00000100: File create"
@@ -28,6 +36,11 @@ def find_checkpoints(usn):
 	return relevant
 
 
+def get_rda_id(install_path):
+	data = fex.extract_file(f'{install_path}\\system.conf')
+	return re.search('ad\.anynet\.id=\d+', data).group(0).split('=')[1]
+
+
 def get_installation_data(checkpoints):
 	data = {}
 	data['timeline'] = []
@@ -47,8 +60,9 @@ def get_installation_data(checkpoints):
 		else:
 			raise Exception('Error: Unknown event')
 
-	data['is_installed'] = data['timeline'][-1]['action'] == 'installed'
+	data['is_installed'] = len(data['timeline']) > 0 and data['timeline'][-1]['action'] == 'installed'
 	data['installation_path'] = data['timeline'][-1]['path'] if data['is_installed'] else None
+	data['rda_id'] = get_rda_id(data['installation_path']) if data['is_installed'] else None
 	return data
 
 
