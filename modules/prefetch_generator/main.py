@@ -13,7 +13,7 @@ args = parser.parse_args()
 def get_prefetch_entries(usn):
 	entries = []
 	for entry in usn:
-		match = re.match('C:\\\\Windows\\\\Prefetch\\\\(.+?).pf', entry['path'])
+		match = re.search('Windows\\\\Prefetch\\\\(.+?).pf', entry['path'])
 		if match:
 			exe, loc_hash = match.group(1).rsplit('-', 1) 
 			entries.append({
